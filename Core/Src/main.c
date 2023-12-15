@@ -85,20 +85,39 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  /* USER CODE BEGIN 2 */
+  MX_GPIO_Init();
+    /*SysTick Configuration*/
+    SystemCoreClockUpdate();
+    /*Generate interrupt for each 10ms*/
+    SysTick_Config(SystemCoreClock/100);
+    SysTick ->CTRL = 0;
+    SysTick ->VAL = 0;
+    SysTick ->CTRL = (SysTick_CTRL_TICKINT_Msk
+  		   	   	    |SysTick_CTRL_ENABLE_Msk
+  					|SysTick_CTRL_CLKSOURCE_Msk);
 
-  /* USER CODE END 2 */
+    /* Infinite loop */
+    /* USER CODE BEGIN WHILE */
+    while (1)
+    {
+      /* USER CODE END WHILE */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
+      /* USER CODE BEGIN 3 */
+    }
+    /* USER CODE END 3 */
   }
-  /* USER CODE END 3 */
-}
+
+  void SysTick_Handler(void)
+  {
+
+    HAL_IncTick();
+    /*Toggle LEDs for every one second*/
+    if(uwTick >= 100){
+  	  GPIOD->BSRR = (((GPIOD->ODR)&(1<<12))&&(1<<13)) ? 1<<(13+16) : 1<<13;
+  	  GPIOD->BSRR = (((GPIOD->ODR)&(1<<12))&&(1<<12)) ? 1<<(12+16) : 1<<12;
+  	  uwTick=0;
+    }
+  }
 
 /**
   * @brief System Clock Configuration
