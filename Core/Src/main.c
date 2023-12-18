@@ -1,4 +1,3 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file           : main.c
@@ -15,174 +14,12 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-static void MX_GPIO_Init(void);
-/* USER CODE BEGIN PFP */
-
-
-typedef struct
-{
-  uint32_t PLLState;   /*!< The new state of the PLL.
-                            This parameter can be a value of @ref RCC_PLL_Config                      */
-
-  uint32_t PLLSource;  /*!< RCC_PLLSource: PLL entry clock source.
-                            This parameter must be a value of @ref RCC_PLL_Clock_Source               */
-
-  uint32_t PLLM;       /*!< PLLM: Division factor for PLL VCO input clock.
-                            This parameter must be a number between Min_Data = 0 and Max_Data = 63    */
-
-  uint32_t PLLN;       /*!< PLLN: Multiplication factor for PLL VCO output clock.
-                            This parameter must be a number between Min_Data = 50 and Max_Data = 432
-                            except for STM32F411xE devices where the Min_Data = 192 */
-
-  uint32_t PLLP;       /*!< PLLP: Division factor for main system clock (SYSCLK).
-                            This parameter must be a value of @ref RCC_PLLP_Clock_Divider             */
-
-  uint32_t PLLQ;       /*!< PLLQ: Division factor for OTG FS, SDIO and RNG clocks.
-                            This parameter must be a number between Min_Data = 2 and Max_Data = 15    */
-
-  uint32_t PLLR;       /*!< PLLR: PLL division factor for I2S, SAI, SYSTEM, SPDIFRX clocks.
-                            This parameter is only available in STM32F410xx/STM32F446xx/STM32F469xx/STM32F479xx
-                            and STM32F412Zx/STM32F412Vx/STM32F412Rx/STM32F412Cx/STM32F413xx/STM32F423xx devices.
-                            This parameter must be a number between Min_Data = 2 and Max_Data = 7     */
-}RCC_PLLInitTypeDef;
-typedef struct
-{
-  uint32_t OscillatorType;       /*!< The oscillators to be configured.
-                                      This parameter can be a value of @ref RCC_Oscillator_Type                   */
-
-  uint32_t HSEState;             /*!< The new state of the HSE.
-                                      This parameter can be a value of @ref RCC_HSE_Config                        */
-
-  uint32_t LSEState;             /*!< The new state of the LSE.
-                                      This parameter can be a value of @ref RCC_LSE_Config                        */
-
-  uint32_t HSIState;             /*!< The new state of the HSI.
-                                      This parameter can be a value of @ref RCC_HSI_Config                        */
-
-  uint32_t HSICalibrationValue;  /*!< The HSI calibration trimming value (default is RCC_HSICALIBRATION_DEFAULT).
-                                       This parameter must be a number between Min_Data = 0x00 and Max_Data = 0x1F */
-
-  uint32_t LSIState;             /*!< The new state of the LSI.
-                                      This parameter can be a value of @ref RCC_LSI_Config                        */
-
-  RCC_PLLInitTypeDef PLL;        /*!< PLL structure parameters                                                    */
-}RCC_OscInitTypeDef;
-
-typedef struct
-{
-  uint32_t ClockType;             /*!< The clock to be configured.
-                                       This parameter can be a value of @ref RCC_System_Clock_Type      */
-
-  uint32_t SYSCLKSource;          /*!< The clock source (SYSCLKS) used as system clock.
-                                       This parameter can be a value of @ref RCC_System_Clock_Source    */
-
-  uint32_t AHBCLKDivider;         /*!< The AHB clock (HCLK) divider. This clock is derived from the system clock (SYSCLK).
-                                       This parameter can be a value of @ref RCC_AHB_Clock_Source       */
-
-  uint32_t APB1CLKDivider;        /*!< The APB1 clock (PCLK1) divider. This clock is derived from the AHB clock (HCLK).
-                                       This parameter can be a value of @ref RCC_APB1_APB2_Clock_Source */
-
-  uint32_t APB2CLKDivider;        /*!< The APB2 clock (PCLK2) divider. This clock is derived from the AHB clock (HCLK).
-                                       This parameter can be a value of @ref RCC_APB1_APB2_Clock_Source */
-
-}RCC_ClkInitTypeDef;
-
-typedef struct
-{
-  uint32_t Pin;       /*!< Specifies the GPIO pins to be configured.
-                           This parameter can be any value of @ref GPIO_pins_define */
-
-  uint32_t Mode;      /*!< Specifies the operating mode for the selected pins.
-                           This parameter can be a value of @ref GPIO_mode_define */
-
-  uint32_t Pull;      /*!< Specifies the Pull-up or Pull-Down activation for the selected pins.
-                           This parameter can be a value of @ref GPIO_pull_define */
-
-  uint32_t Speed;     /*!< Specifies the speed for the selected pins.
-                           This parameter can be a value of @ref GPIO_speed_define */
-
-  uint32_t Alternate;  /*!< Peripheral to be connected to the selected pins.
-                            This parameter can be a value of @ref GPIO_Alternate_function_selection */
-}GPIO_InitTypeDef;
-
-typedef enum
-{
-  GPIO_PIN_RESET = 0,
-  GPIO_PIN_SET
-}GPIO_PinState;
-
-typedef enum
-{
-  HAL_TICK_FREQ_10HZ         = 100U,
-  HAL_TICK_FREQ_100HZ        = 10U,
-  HAL_TICK_FREQ_1KHZ         = 1U,
-  HAL_TICK_FREQ_DEFAULT      = HAL_TICK_FREQ_1KHZ
-} HAL_TickFreqTypeDef;
-
-typedef enum
-{
-  HAL_OK       = 0x00U,
-  HAL_ERROR    = 0x01U,
-  HAL_BUSY     = 0x02U,
-  HAL_TIMEOUT  = 0x03U
-} HAL_StatusTypeDef;
-
 __IO uint32_t uwTick;
 uint32_t uwTickPrio   = (1UL << __NVIC_PRIO_BITS); /* Invalid PRIO */
-HAL_TickFreqTypeDef uwTickFreq = HAL_TICK_FREQ_DEFAULT;  /* 1KHz */
-
-extern __IO uint32_t uwTick;
-extern uint32_t uwTickPrio;
-extern HAL_TickFreqTypeDef uwTickFreq;
-/* USER CODE END PFP */
-
-void HAL_GPIO_WritePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState);
-void HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init);
-void HAL_IncTick(void);
-HAL_StatusTypeDef HAL_Init(void);
-void HAL_NVIC_SetPriorityGrouping(uint32_t PriorityGroup);
-void HAL_NVIC_SetPriorityGrouping(uint32_t PriorityGroup);
-HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
-uint32_t HAL_SYSTICK_Config(uint32_t TicksNumb);
-void HAL_NVIC_SetPriority(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority);
-
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
+const uint32_t uwTickFreq = 1U; /* Frec 1kHz*/
 
 /**
   * @brief  The application entry point.
@@ -190,30 +27,37 @@ void HAL_NVIC_SetPriority(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t Sub
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
-
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+  /* Configure Flash prefetch, Instruction cache, Data cache */
+#if (INSTRUCTION_CACHE_ENABLE != 0U)
+	FLASH->ACR |= FLASH_ACR_ICEN;
+#endif /* INSTRUCTION_CACHE_ENABLE */
 
-  /* USER CODE BEGIN Init */
+#if (DATA_CACHE_ENABLE != 0U)
+	FLASH->ACR |= FLASH_ACR_DCEN;
+#endif /* DATA_CACHE_ENABLE */
 
-  /* USER CODE END Init */
+#if (PREFETCH_ENABLE != 0U)
+	FLASH->ACR |= FLASH_ACR_PRFTEN;
+#endif /* PREFETCH_ENABLE */
+
+  /* Set Interrupt Group Priority */
+  NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+
+  /* Use systick as time base source and configure 1ms tick (default clock after Reset is HSI) */
+  InitTick(TICK_INT_PRIORITY);
 
   /* Configure the system clock */
   SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+
   /*SysTick Configuration*/
   SystemCoreClockUpdate();
+
   /*Generate interrupt for each 10ms*/
   SysTick_Config(SystemCoreClock/100);
   SysTick ->CTRL = 0;
@@ -222,32 +66,21 @@ int main(void)
   	     			|SysTick_CTRL_ENABLE_Msk
     				|SysTick_CTRL_CLKSOURCE_Msk);
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
+	  //Infinite loop
   }
-  /* USER CODE END 3 */
-  }
+}
 
   void SysTick_Handler(void)
   {
-
-	  HAL_IncTick();
+	  uwTick += uwTickFreq;
 	  /*Toggle LEDs for every one second*/
 	  if(uwTick >= 100){
 		  GPIOD->BSRR = (((GPIOD->ODR)&(1<<12))&&(1<<13)) ? 1<<(13+16) : 1<<13;
 		  GPIOD->BSRR = (((GPIOD->ODR)&(1<<12))&&(1<<12)) ? 1<<(12+16) : 1<<12;
 		  uwTick=0;
 	  }
-  }
-
-  void HAL_IncTick(void)
-  {
-    uwTick += uwTickFreq;
   }
 
 /**
@@ -259,14 +92,11 @@ void SystemClock_Config(void)
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /** Configure the main internal regulator output voltage
-  */
+  /* Configure the main internal regulator output voltage*/
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
+  /* Initializes the RCC Oscillators according to the specified parameters in the RCC_OscInitTypeDef structure. */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -275,13 +105,13 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 336;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 7;
+
   //if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != 0x00U)
   //{
   //  Error_Handler();
   //}
 
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
+  /* Initializes the CPU, AHB and APB buses clocks*/
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
@@ -300,11 +130,9 @@ void SystemClock_Config(void)
   * @param None
   * @retval None
   */
-static void MX_GPIO_Init(void)
+void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOE_CLK_ENABLE();
@@ -315,13 +143,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_RESET);
+  GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(OTG_FS_PowerSwitchOn_GPIO_Port, OTG_FS_PowerSwitchOn_Pin, GPIO_PIN_SET);
+  GPIO_WritePin(OTG_FS_PowerSwitchOn_GPIO_Port, OTG_FS_PowerSwitchOn_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, LD4_Pin|LD3_Pin|LD5_Pin|LD6_Pin
+  GPIO_WritePin(GPIOD, LD4_Pin|LD3_Pin|LD5_Pin|LD6_Pin
                           |Audio_RST_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : CS_I2C_SPI_Pin */
@@ -329,26 +157,26 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(CS_I2C_SPI_GPIO_Port, &GPIO_InitStruct);
+  GPIO_Init_Func(CS_I2C_SPI_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : OTG_FS_PowerSwitchOn_Pin */
   GPIO_InitStruct.Pin = OTG_FS_PowerSwitchOn_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(OTG_FS_PowerSwitchOn_GPIO_Port, &GPIO_InitStruct);
+  GPIO_Init_Func(OTG_FS_PowerSwitchOn_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+  GPIO_Init_Func(B1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : BOOT1_Pin */
   GPIO_InitStruct.Pin = BOOT1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(BOOT1_GPIO_Port, &GPIO_InitStruct);
+  GPIO_Init_Func(BOOT1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD4_Pin LD3_Pin LD5_Pin LD6_Pin
                            Audio_RST_Pin */
@@ -357,27 +185,20 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  GPIO_Init_Func(GPIOD, &GPIO_InitStruct);
 
   /*Configure GPIO pin : OTG_FS_OverCurrent_Pin */
   GPIO_InitStruct.Pin = OTG_FS_OverCurrent_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(OTG_FS_OverCurrent_GPIO_Port, &GPIO_InitStruct);
+  GPIO_Init_Func(OTG_FS_OverCurrent_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : MEMS_INT2_Pin */
   GPIO_InitStruct.Pin = MEMS_INT2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(MEMS_INT2_GPIO_Port, &GPIO_InitStruct);
-
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  GPIO_Init_Func(MEMS_INT2_GPIO_Port, &GPIO_InitStruct);
 }
-
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
 
 /**
   * @brief  This function is executed in case of error occurrence.
@@ -390,11 +211,11 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
+	  //Infinite error loop
   }
-  /* USER CODE END Error_Handler_Debug */
 }
 
-void HAL_GPIO_WritePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState)
+void GPIO_WritePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState)
 {
   /* Check the parameters */
   //assert_param(IS_GPIO_PIN(GPIO_Pin));
@@ -410,7 +231,7 @@ void HAL_GPIO_WritePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, GPIO_PinState Pin
   }
 }
 
-void HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
+void GPIO_Init_Func(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
 {
   uint32_t position;
   uint32_t ioposition = 0x00U;
@@ -532,97 +353,17 @@ void HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
   }
 }
 
-HAL_StatusTypeDef HAL_Init(void)
-{
-  /* Configure Flash prefetch, Instruction cache, Data cache */
-#if (INSTRUCTION_CACHE_ENABLE != 0U)
-  __HAL_FLASH_INSTRUCTION_CACHE_ENABLE();
-#endif /* INSTRUCTION_CACHE_ENABLE */
-
-#if (DATA_CACHE_ENABLE != 0U)
-  __HAL_FLASH_DATA_CACHE_ENABLE();
-#endif /* DATA_CACHE_ENABLE */
-
-#if (PREFETCH_ENABLE != 0U)
-  __HAL_FLASH_PREFETCH_BUFFER_ENABLE();
-#endif /* PREFETCH_ENABLE */
-
-  /* Set Interrupt Group Priority */
-  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-
-  /* Use systick as time base source and configure 1ms tick (default clock after Reset is HSI) */
-  HAL_InitTick(TICK_INT_PRIORITY);
-
-  /* Init the low level hardware */
-  //HAL_MspInit();
-
-  /* Return function status */
-  return HAL_OK;
-}
-
-void HAL_NVIC_SetPriorityGrouping(uint32_t PriorityGroup)
-{
-  /* Check the parameters */
-  //assert_param(IS_NVIC_PRIORITY_GROUP(PriorityGroup));
-
-  /* Set the PRIGROUP[10:8] bits according to the PriorityGroup parameter value */
-  NVIC_SetPriorityGrouping(PriorityGroup);
-}
-
-
-HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
+void InitTick(uint32_t TickPriority)
 {
   /* Configure the SysTick to have interrupt in 1ms time basis*/
-  if (HAL_SYSTICK_Config(SystemCoreClock / (1000U / uwTickFreq)) > 0U)
-  {
-    return HAL_ERROR;
-  }
+  SysTick_Config(SystemCoreClock / (1000U / uwTickFreq));
 
   /* Configure the SysTick IRQ priority */
   if (TickPriority < (1UL << __NVIC_PRIO_BITS))
   {
-    HAL_NVIC_SetPriority(SysTick_IRQn, TickPriority, 0U);
+	NVIC_SetPriority(SysTick_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), TickPriority, 0U));
     uwTickPrio = TickPriority;
-  }
-  else
-  {
-    return HAL_ERROR;
-  }
-
-  /* Return function status */
-  return HAL_OK;
+  } // else error
 }
 
-uint32_t HAL_SYSTICK_Config(uint32_t TicksNumb)
-{
-   return SysTick_Config(TicksNumb);
-}
 
-void HAL_NVIC_SetPriority(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority)
-{
-  uint32_t prioritygroup = 0x00U;
-
-  /* Check the parameters */
-  //assert_param(IS_NVIC_SUB_PRIORITY(SubPriority));
-  //assert_param(IS_NVIC_PREEMPTION_PRIORITY(PreemptPriority));
-
-  prioritygroup = NVIC_GetPriorityGrouping();
-
-  NVIC_SetPriority(IRQn, NVIC_EncodePriority(prioritygroup, PreemptPriority, SubPriority));
-}
-#ifdef  USE_FULL_ASSERT
-/**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
-void assert_failed(uint8_t *file, uint32_t line)
-{
-  /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-  /* USER CODE END 6 */
-}
-#endif /* USE_FULL_ASSERT */
