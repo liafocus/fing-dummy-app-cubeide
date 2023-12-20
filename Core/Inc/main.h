@@ -31,7 +31,6 @@ void InitTick(uint32_t TickPriority);
 
 /* Private defines -----------------------------------------------------------*/
 
-
 /* USER CODE BEGIN Private defines */
 
 
