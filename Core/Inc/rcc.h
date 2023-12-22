@@ -5,8 +5,7 @@
  *      Author: Lia
  */
 
-#ifndef INC_RCC_H_
-#define INC_RCC_H_
+#pragma once
 #include "stm32f4xx.h"
 
 typedef struct
@@ -114,4 +113,4 @@ void SystemClock_Config(void);
                                                           } while(0U)
 
 
-#endif /* INC_RCC_H_ */
+
