@@ -5,8 +5,7 @@
  *      Author: Lia
  */
 
-#ifndef INC_GPIO_H_
-#define INC_GPIO_H_
+#pragma once
 #include "stm32f4xx.h"
 
 
@@ -192,5 +191,3 @@ void GPIO_Init_Func(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init);
                                         tmpreg = READ_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN);\
                                         UNUSED(tmpreg); \
                                           } while(0U)
-
-#endif /* INC_GPIO_H_ */
