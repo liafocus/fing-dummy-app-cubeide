@@ -83,10 +83,6 @@ void Dummy_GPIO_Init(void)
 
 void GPIO_WritePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState)
 {
-  /* Check the parameters */
-  //assert_param(IS_GPIO_PIN(GPIO_Pin));
-  //assert_param(IS_GPIO_PIN_ACTION(PinState));
-
   if(PinState != GPIO_PIN_RESET)
   {
     GPIOx->BSRR = GPIO_Pin;
@@ -105,11 +101,6 @@ void GPIO_Init_Func(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
   uint32_t iocurrent = 0x00U;
   uint32_t temp = 0x00U;
 
-  /* Check the parameters */
-  //assert_param(IS_GPIO_ALL_INSTANCE(GPIOx));
-  //assert_param(IS_GPIO_PIN(GPIO_Init->Pin));
-  //assert_param(IS_GPIO_MODE(GPIO_Init->Mode));
-
   /* Configure the port pins */
   for(position = 0U; position < GPIO_NUMBER; position++)
   {
@@ -125,8 +116,6 @@ void GPIO_Init_Func(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
       if(((GPIO_Init->Mode & GPIO_MODE) == MODE_OUTPUT) || \
           (GPIO_Init->Mode & GPIO_MODE) == MODE_AF)
       {
-        /* Check the Speed parameter */
-        //assert_param(IS_GPIO_SPEED(GPIO_Init->Speed));
         /* Configure the IO Speed */
         temp = GPIOx->OSPEEDR;
         temp &= ~(GPIO_OSPEEDER_OSPEEDR0 << (position * 2U));
@@ -142,9 +131,6 @@ void GPIO_Init_Func(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
 
       if((GPIO_Init->Mode & GPIO_MODE) != MODE_ANALOG)
       {
-        /* Check the parameters */
-        //assert_param(IS_GPIO_PULL(GPIO_Init->Pull));
-
         /* Activate the Pull-up or Pull down resistor for the current IO */
         temp = GPIOx->PUPDR;
         temp &= ~(GPIO_PUPDR_PUPDR0 << (position * 2U));

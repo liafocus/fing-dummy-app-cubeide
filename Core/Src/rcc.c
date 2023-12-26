@@ -5,15 +5,15 @@
  *      Author: Lia
  */
 
-/**
-  * @brief System Clock Configuration
-  * @retval None
-  */
 #include "rcc.h"
 
 static uint32_t uwTickPrio   = (1UL << __NVIC_PRIO_BITS); /* Invalid PRIO */
 static uint32_t uwTickFreq = 1U;
 
+/**
+  * @brief System Clock Configuration
+  * @retval None
+  */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -33,7 +33,6 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 7;
 
-  //HAL_RCC_OscConfig(&RCC_OscInitStruct);
   __HAL_RCC_HSE_CONFIG(RCC_OscInitStruct.HSEState);
   if((RCC_OscInitStruct.HSEState) != RCC_HSE_OFF)
   {
@@ -45,7 +44,6 @@ void SystemClock_Config(void)
       /* Wait till HSE is bypassed or disabled */
       while(__HAL_RCC_GET_FLAG(RCC_FLAG_HSERDY) != RESET)
       {
-
       }
 
 /*-------------------------------- PLL Configuration -----------------------*/
@@ -127,7 +125,6 @@ if ((RCC_OscInitStruct.PLL.PLLState) != RCC_PLL_NONE)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  //HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5);
   uint32_t FLatency = FLASH_LATENCY_5;
     /* To correctly read data from FLASH memory, the number of wait states (LATENCY)
       must be correctly programmed according to the frequency of the CPU clock
@@ -167,11 +164,6 @@ if ((RCC_OscInitStruct.PLL.PLLState) != RCC_PLL_NONE)
       }
 
       __HAL_RCC_SYSCLK_CONFIG(RCC_ClkInitStruct.SYSCLKSource);
-
-
-//   while (__HAL_RCC_GET_SYSCLK_SOURCE() != (RCC_ClkInitStruct.SYSCLKSource << RCC_CFGR_SWS_Pos))
-//      {
-//      }
     }
 
     /* Decreasing the number of wait states because of lower CPU frequency */
