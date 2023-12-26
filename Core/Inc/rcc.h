@@ -79,6 +79,8 @@ typedef struct
 
 
 void SystemClock_Config(void);
+void InitTick(uint32_t TickPriority);
+uint32_t RCC_GetSysClockFreq(void);
 
 #define RCC_OSCILLATORTYPE_HSE             0x00000001U
 #define RCC_HSE_ON                       RCC_CR_HSEON
@@ -111,6 +113,68 @@ void SystemClock_Config(void);
                                                             tmpreg = READ_BIT(PWR->CR, PWR_CR_VOS);             \
                                                             UNUSED(tmpreg);                                     \
                                                           } while(0U)
+#define __HAL_RCC_HSE_CONFIG(__STATE__)                         \
+                    do {                                        \
+                      if ((__STATE__) == RCC_HSE_ON)            \
+                      {                                         \
+                        SET_BIT(RCC->CR, RCC_CR_HSEON);         \
+                      }                                         \
+                      else if ((__STATE__) == RCC_HSE_BYPASS)   \
+                      {                                         \
+                        SET_BIT(RCC->CR, RCC_CR_HSEBYP);        \
+                        SET_BIT(RCC->CR, RCC_CR_HSEON);         \
+                      }                                         \
+                      else                                      \
+                      {                                         \
+                        CLEAR_BIT(RCC->CR, RCC_CR_HSEON);       \
+                        CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);      \
+                      }                                         \
+                    } while(0U)
+#define RCC_PLL_NONE                      ((uint8_t)0x00)
+#define RCC_PLL_OFF                       ((uint8_t)0x01)
+#define RCC_PLL_ON                        ((uint8_t)0x02)
+#define __HAL_RCC_GET_SYSCLK_SOURCE() (RCC->CFGR & RCC_CFGR_SWS)
+#define RCC_CFGR_SWS_PLL                   0x00000008U                         /*!< PLL used as system clock                   */
+#define __HAL_RCC_PLL_ENABLE() (*(__IO uint32_t *) RCC_CR_PLLON_BB = ENABLE)
+#define __HAL_RCC_PLL_DISABLE() (*(__IO uint32_t *) RCC_CR_PLLON_BB = DISABLE)
+#define RCC_FLAG_MASK  ((uint8_t)0x1FU)
+#define __HAL_RCC_GET_FLAG(__FLAG__) (((((((__FLAG__) >> 5U) == 1U)? RCC->CR :((((__FLAG__) >> 5U) == 2U) ? RCC->BDCR :((((__FLAG__) >> 5U) == 3U)? RCC->CSR :RCC->CIR))) & (1U << ((__FLAG__) & RCC_FLAG_MASK)))!= 0U)? 1U : 0U)
+/* --- CSR Register --- */
+/* Alias word address of LSION bit */
+#define RCC_CSR_OFFSET             (RCC_OFFSET + 0x74U)
+#define RCC_LSION_BIT_NUMBER        0x00U
+#define RCC_CSR_LSION_BB           (PERIPH_BB_BASE + (RCC_CSR_OFFSET * 32U) + (RCC_LSION_BIT_NUMBER * 4U))
+/* Alias word address of PLLON bit */
+#define RCC_PLLON_BIT_NUMBER       0x18U
+#define RCC_CR_PLLON_BB            (PERIPH_BB_BASE + (RCC_CR_OFFSET * 32U) + (RCC_PLLON_BIT_NUMBER * 4U))
+/* Alias word address of HSION bit */
+#define RCC_CR_OFFSET              (RCC_OFFSET + 0x00U)
+#define RCC_HSION_BIT_NUMBER       0x00U
+#define RCC_CR_HSION_BB            (PERIPH_BB_BASE + (RCC_CR_OFFSET * 32U) + (RCC_HSION_BIT_NUMBER * 4U))
+/* Flags in the CR register */
+#define RCC_FLAG_HSIRDY                  ((uint8_t)0x21)
+#define RCC_FLAG_HSERDY                  ((uint8_t)0x31)
+#define RCC_FLAG_PLLRDY                  ((uint8_t)0x39)
+#define RCC_FLAG_PLLI2SRDY               ((uint8_t)0x3B)
+#define RCC_HSE_OFF                      0x00000000U
+#define RCC_HSE_ON                       RCC_CR_HSEON
+#define RCC_HSE_BYPASS                   ((uint32_t)(RCC_CR_HSEBYP | RCC_CR_HSEON))
+#define RCC_OFFSET                 (RCC_BASE - PERIPH_BASE)
+#define RCC_SYSCLKSOURCE_PLLRCLK         ((uint32_t)(RCC_CFGR_SW_0 | RCC_CFGR_SW_1))
+#define __HAL_RCC_SYSCLK_CONFIG(__RCC_SYSCLKSOURCE__) MODIFY_REG(RCC->CFGR, RCC_CFGR_SW, (__RCC_SYSCLKSOURCE__))
+#define __HAL_FLASH_GET_LATENCY()     (READ_BIT((FLASH->ACR), FLASH_ACR_LATENCY))
+#define __HAL_FLASH_SET_LATENCY(__LATENCY__) (*(__IO uint8_t *)ACR_BYTE0_ADDRESS = (uint8_t)(__LATENCY__))
+#define ACR_BYTE0_ADDRESS           0x40023C00U
+#define FLASH_LATENCY_5                FLASH_ACR_LATENCY_5WS   /*!< FLASH Five Latency cycles     */
+#define HSI_VALUE    ((uint32_t)16000000U) /*!< Value of the Internal oscillator in Hz*/
+#define RCC_PLLSOURCE_HSI                RCC_PLLCFGR_PLLSRC_HSI
+#define RCC_PLLSOURCE_HSE                RCC_PLLCFGR_PLLSRC_HSE
+#define RCC_SYSCLKSOURCE_HSI             RCC_CFGR_SW_HSI
+#define RCC_SYSCLKSOURCE_HSE             RCC_CFGR_SW_HSE
+#define HSE_VALUE    8000000U /*!< Value of the External oscillator in Hz */
+#define __HAL_RCC_GET_PLL_OSCSOURCE() ((uint32_t)(RCC->PLLCFGR & RCC_PLLCFGR_PLLSRC))
+#define RCC_PLLSOURCE_HSE                RCC_PLLCFGR_PLLSRC_HSE
+
 
 
 

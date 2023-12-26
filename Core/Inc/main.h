@@ -16,8 +16,8 @@
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
+#pragma once
+
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx.h"
@@ -27,7 +27,7 @@
 
 /* Function declarations ------------------------------------------------------------------*/
 void Error_Handler(void);
-void InitTick(uint32_t TickPriority);
+
 
 /* Private defines -----------------------------------------------------------*/
 
@@ -35,4 +35,4 @@ void InitTick(uint32_t TickPriority);
 
 
 
-#endif /* __MAIN_H */
+

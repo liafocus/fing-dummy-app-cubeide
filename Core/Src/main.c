@@ -18,9 +18,6 @@
 #include "main.h"
 
 __IO uint32_t uwTick;
-uint32_t uwTickPrio   = (1UL << __NVIC_PRIO_BITS); /* Invalid PRIO */
-const uint32_t uwTickFreq = 1U; /* Frec 1kHz*/
-
 uint32_t bkpt_counter = 0;
 /**
   * @brief  The application entry point.
@@ -75,7 +72,7 @@ int main(void)
 
 void SysTick_Handler(void)
 {
-  uwTick += uwTickFreq;
+  uwTick++;
   /*Toggle LEDs for every one second*/
   if(uwTick >= 100){
 	  GPIOD->BSRR = (((GPIOD->ODR)&(1<<12))&&(1<<13)) ? 1<<(13+16) : 1<<13;
@@ -105,17 +102,5 @@ void Error_Handler(void)
 }
 
 
-void InitTick(uint32_t TickPriority)
-{
-  /* Configure the SysTick to have interrupt in 1ms time basis*/
-  SysTick_Config(SystemCoreClock / (1000U / uwTickFreq));
-
-  /* Configure the SysTick IRQ priority */
-  if (TickPriority < (1UL << __NVIC_PRIO_BITS))
-  {
-	NVIC_SetPriority(SysTick_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), TickPriority, 0U));
-    uwTickPrio = TickPriority;
-  } // else error
-}
 
 
